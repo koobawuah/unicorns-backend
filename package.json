@@ -1,0 +1,19 @@
+{
+  "name": "unicorn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "keystone dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@keystone-6/core": "^1.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  }
+}
