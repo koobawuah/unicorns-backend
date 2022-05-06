@@ -5,7 +5,7 @@ const Rating = list({
     ui: { labelField: 'rating' },
     fields: {
         ratingType: select({ 
-            defaultValue: 'Rating Options',
+            defaultValue: 'OVERALL_RATING',
             options: [
                 { label: 'Overall Rating', value: 'OVERALL_RATING' },
                 { label: 'Facilities Rating', value: 'FACILITY_RATING' },
