@@ -12,46 +12,86 @@ generator client {
 }
 
 model User {
-  id         String  @id @default(cuid())
-  username   String  @default("")
-  email      String  @unique @default("")
-  isVerified Boolean @default(false)
+  id                  String      @id @default(cuid())
+  username            String      @default("")
+  email               String      @unique @default("")
+  isVerified          Boolean     @default(false)
+  attendsUniversity   University? @relation("User_attendsUniversity", fields: [attendsUniversityId], references: [id])
+  attendsUniversityId String?     @map("attendsUniversity")
+  reviewsMade         Review[]    @relation("Review_reviewBy")
+
+  @@index([attendsUniversityId])
 }
 
 model University {
-  id          String  @id @default(cuid())
-  name        String  @default("")
-  slug        String  @default("")
-  description String  @default("")
-  location    String  @default("")
-  population  Int?
-  isApproved  Boolean @default(false)
+  id                    String   @id @default(cuid())
+  name                  String   @default("")
+  slug                  String   @default("")
+  campusImage_filesize  Int?
+  campusImage_extension String?
+  campusImage_width     Int?
+  campusImage_height    Int?
+  campusImage_mode      String?
+  campusImage_id        String?
+  description           String   @default("")
+  location              String   @default("")
+  population            Int?
+  isApproved            Boolean  @default(false)
+  students              User[]   @relation("User_attendsUniversity")
+  hasCourses            Course[] @relation("Course_courseAt")
+  overallRating         Rating[] @relation("Rating_ratingForUni")
+  reviews               Review[] @relation("Review_reviewsOfUni")
 }
 
 model Course {
-  id          String  @id @default(cuid())
-  courseCode  String  @unique @default("")
-  courseTitle String  @default("")
-  description String  @default("")
-  isPopular   Boolean @default(false)
-  isApproved  Boolean @default(false)
+  id           String      @id @default(cuid())
+  courseCode   String      @unique @default("")
+  courseTitle  String      @default("")
+  description  String      @default("")
+  isPopular    Boolean     @default(false)
+  isApproved   Boolean     @default(false)
+  courseAt     University? @relation("Course_courseAt", fields: [courseAtId], references: [id])
+  courseAtId   String?     @map("courseAt")
+  courseRating Rating[]    @relation("Rating_ratingForCourse")
+  reviews      Review[]    @relation("Review_reviewsOfCourse")
+
+  @@index([courseAtId])
 }
 
 model Review {
-  id                 String    @id @default(cuid())
-  reviewSummary      String    @default("")
-  pros               String    @default("")
-  cons               String    @default("")
-  suggestions        String    @default("")
-  isApproved         Boolean   @default(false)
-  datePosted         DateTime? @default(now())
+  id                 String      @id @default(cuid())
+  reviewSummary      String      @default("")
+  pros               String      @default("")
+  cons               String      @default("")
+  suggestions        String      @default("")
+  isApproved         Boolean     @default(false)
+  datePosted         DateTime?   @default(now())
   alumniYear         Int?
-  isAnon             Boolean   @default(false)
+  isAnon             Boolean     @default(false)
   inAppropriateCount Int?
+  reviewBy           User[]      @relation("Review_reviewBy")
+  rating             Rating[]    @relation("Rating_reviewRating")
+  reviewsOfUni       University? @relation("Review_reviewsOfUni", fields: [reviewsOfUniId], references: [id])
+  reviewsOfUniId     String?     @map("reviewsOfUni")
+  reviewsOfCourse    Course?     @relation("Review_reviewsOfCourse", fields: [reviewsOfCourseId], references: [id])
+  reviewsOfCourseId  String?     @map("reviewsOfCourse")
+
+  @@index([reviewsOfUniId])
+  @@index([reviewsOfCourseId])
 }
 
 model Rating {
-  id     String  @id @default(cuid())
-  tile   String? @default("Rating Options")
-  rating Int?
+  id                String      @id @default(cuid())
+  ratingType        String?     @default("Rating Options")
+  rating            Float?
+  reviewRating      Review?     @relation("Rating_reviewRating", fields: [reviewRatingId], references: [id])
+  reviewRatingId    String?     @map("reviewRating")
+  ratingForUni      University? @relation("Rating_ratingForUni", fields: [ratingForUniId], references: [id])
+  ratingForUniId    String?     @map("ratingForUni")
+  ratingForCourse   Course?     @relation("Rating_ratingForCourse", fields: [ratingForCourseId], references: [id])
+  ratingForCourseId String?     @map("ratingForCourse")
+
+  @@index([reviewRatingId])
+  @@index([ratingForUniId])
+  @@index([ratingForCourseId])
 }

@@ -6,6 +6,14 @@ type User {
   username: String
   email: String
   isVerified: Boolean
+  attendsUniversity: University
+  reviewsMade(
+    where: ReviewWhereInput! = {}
+    orderBy: [ReviewOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Review!]
+  reviewsMadeCount(where: ReviewWhereInput! = {}): Int
 }
 
 input UserWhereUniqueInput {
@@ -21,6 +29,8 @@ input UserWhereInput {
   username: StringFilter
   email: StringFilter
   isVerified: BooleanFilter
+  attendsUniversity: UniversityWhereInput
+  reviewsMade: ReviewManyRelationFilter
 }
 
 input IDFilter {
@@ -67,6 +77,12 @@ input BooleanFilter {
   not: BooleanFilter
 }
 
+input ReviewManyRelationFilter {
+  every: ReviewWhereInput
+  some: ReviewWhereInput
+  none: ReviewWhereInput
+}
+
 input UserOrderByInput {
   id: OrderDirection
   username: OrderDirection
@@ -83,6 +99,21 @@ input UserUpdateInput {
   username: String
   email: String
   isVerified: Boolean
+  attendsUniversity: UniversityRelateToOneForUpdateInput
+  reviewsMade: ReviewRelateToManyForUpdateInput
+}
+
+input UniversityRelateToOneForUpdateInput {
+  create: UniversityCreateInput
+  connect: UniversityWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ReviewRelateToManyForUpdateInput {
+  disconnect: [ReviewWhereUniqueInput!]
+  set: [ReviewWhereUniqueInput!]
+  create: [ReviewCreateInput!]
+  connect: [ReviewWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -94,20 +125,98 @@ input UserCreateInput {
   username: String
   email: String
   isVerified: Boolean
+  attendsUniversity: UniversityRelateToOneForCreateInput
+  reviewsMade: ReviewRelateToManyForCreateInput
+}
+
+input UniversityRelateToOneForCreateInput {
+  create: UniversityCreateInput
+  connect: UniversityWhereUniqueInput
+}
+
+input ReviewRelateToManyForCreateInput {
+  create: [ReviewCreateInput!]
+  connect: [ReviewWhereUniqueInput!]
 }
 
 type University {
   id: ID!
   name: String
   slug: String
+  campusImage: ImageFieldOutput
   description: String
   location: String
   population: Int
   isApproved: Boolean
+  students(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+  studentsCount(where: UserWhereInput! = {}): Int
+  hasCourses(
+    where: CourseWhereInput! = {}
+    orderBy: [CourseOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Course!]
+  hasCoursesCount(where: CourseWhereInput! = {}): Int
+  overallRating(
+    where: RatingWhereInput! = {}
+    orderBy: [RatingOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Rating!]
+  overallRatingCount(where: RatingWhereInput! = {}): Int
+  reviews(
+    where: ReviewWhereInput! = {}
+    orderBy: [ReviewOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Review!]
+  reviewsCount(where: ReviewWhereInput! = {}): Int
+}
+
+interface ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
 }
 
 input UniversityWhereUniqueInput {
   id: ID
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
+}
+
+type CloudImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  url: String!
 }
 
 input UniversityWhereInput {
@@ -121,6 +230,10 @@ input UniversityWhereInput {
   location: StringFilter
   population: IntNullableFilter
   isApproved: BooleanFilter
+  students: UserManyRelationFilter
+  hasCourses: CourseManyRelationFilter
+  overallRating: RatingManyRelationFilter
+  reviews: ReviewManyRelationFilter
 }
 
 input IntNullableFilter {
@@ -132,6 +245,24 @@ input IntNullableFilter {
   gt: Int
   gte: Int
   not: IntNullableFilter
+}
+
+input UserManyRelationFilter {
+  every: UserWhereInput
+  some: UserWhereInput
+  none: UserWhereInput
+}
+
+input CourseManyRelationFilter {
+  every: CourseWhereInput
+  some: CourseWhereInput
+  none: CourseWhereInput
+}
+
+input RatingManyRelationFilter {
+  every: RatingWhereInput
+  some: RatingWhereInput
+  none: RatingWhereInput
 }
 
 input UniversityOrderByInput {
@@ -147,10 +278,46 @@ input UniversityOrderByInput {
 input UniversityUpdateInput {
   name: String
   slug: String
+  campusImage: ImageFieldInput
   description: String
   location: String
   population: Int
   isApproved: Boolean
+  students: UserRelateToManyForUpdateInput
+  hasCourses: CourseRelateToManyForUpdateInput
+  overallRating: RatingRelateToManyForUpdateInput
+  reviews: ReviewRelateToManyForUpdateInput
+}
+
+input ImageFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input UserRelateToManyForUpdateInput {
+  disconnect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input CourseRelateToManyForUpdateInput {
+  disconnect: [CourseWhereUniqueInput!]
+  set: [CourseWhereUniqueInput!]
+  create: [CourseCreateInput!]
+  connect: [CourseWhereUniqueInput!]
+}
+
+input RatingRelateToManyForUpdateInput {
+  disconnect: [RatingWhereUniqueInput!]
+  set: [RatingWhereUniqueInput!]
+  create: [RatingCreateInput!]
+  connect: [RatingWhereUniqueInput!]
 }
 
 input UniversityUpdateArgs {
@@ -161,10 +328,30 @@ input UniversityUpdateArgs {
 input UniversityCreateInput {
   name: String
   slug: String
+  campusImage: ImageFieldInput
   description: String
   location: String
   population: Int
   isApproved: Boolean
+  students: UserRelateToManyForCreateInput
+  hasCourses: CourseRelateToManyForCreateInput
+  overallRating: RatingRelateToManyForCreateInput
+  reviews: ReviewRelateToManyForCreateInput
+}
+
+input UserRelateToManyForCreateInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input CourseRelateToManyForCreateInput {
+  create: [CourseCreateInput!]
+  connect: [CourseWhereUniqueInput!]
+}
+
+input RatingRelateToManyForCreateInput {
+  create: [RatingCreateInput!]
+  connect: [RatingWhereUniqueInput!]
 }
 
 type Course {
@@ -174,6 +361,21 @@ type Course {
   description: String
   isPopular: Boolean
   isApproved: Boolean
+  courseAt: University
+  courseRating(
+    where: RatingWhereInput! = {}
+    orderBy: [RatingOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Rating!]
+  courseRatingCount(where: RatingWhereInput! = {}): Int
+  reviews(
+    where: ReviewWhereInput! = {}
+    orderBy: [ReviewOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Review!]
+  reviewsCount(where: ReviewWhereInput! = {}): Int
 }
 
 input CourseWhereUniqueInput {
@@ -191,6 +393,9 @@ input CourseWhereInput {
   description: StringFilter
   isPopular: BooleanFilter
   isApproved: BooleanFilter
+  courseAt: UniversityWhereInput
+  courseRating: RatingManyRelationFilter
+  reviews: ReviewManyRelationFilter
 }
 
 input CourseOrderByInput {
@@ -208,6 +413,9 @@ input CourseUpdateInput {
   description: String
   isPopular: Boolean
   isApproved: Boolean
+  courseAt: UniversityRelateToOneForUpdateInput
+  courseRating: RatingRelateToManyForUpdateInput
+  reviews: ReviewRelateToManyForUpdateInput
 }
 
 input CourseUpdateArgs {
@@ -221,6 +429,9 @@ input CourseCreateInput {
   description: String
   isPopular: Boolean
   isApproved: Boolean
+  courseAt: UniversityRelateToOneForCreateInput
+  courseRating: RatingRelateToManyForCreateInput
+  reviews: ReviewRelateToManyForCreateInput
 }
 
 type Review {
@@ -234,6 +445,22 @@ type Review {
   alumniYear: Int
   isAnon: Boolean
   inAppropriateCount: Int
+  reviewBy(
+    where: UserWhereInput! = {}
+    orderBy: [UserOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [User!]
+  reviewByCount(where: UserWhereInput! = {}): Int
+  rating(
+    where: RatingWhereInput! = {}
+    orderBy: [RatingOrderByInput!]! = []
+    take: Int
+    skip: Int! = 0
+  ): [Rating!]
+  ratingCount(where: RatingWhereInput! = {}): Int
+  reviewsOfUni: University
+  reviewsOfCourse: Course
 }
 
 scalar DateTime
@@ -257,6 +484,10 @@ input ReviewWhereInput {
   alumniYear: IntNullableFilter
   isAnon: BooleanFilter
   inAppropriateCount: IntNullableFilter
+  reviewBy: UserManyRelationFilter
+  rating: RatingManyRelationFilter
+  reviewsOfUni: UniversityWhereInput
+  reviewsOfCourse: CourseWhereInput
 }
 
 input DateTimeNullableFilter {
@@ -293,6 +524,16 @@ input ReviewUpdateInput {
   alumniYear: Int
   isAnon: Boolean
   inAppropriateCount: Int
+  reviewBy: UserRelateToManyForUpdateInput
+  rating: RatingRelateToManyForUpdateInput
+  reviewsOfUni: UniversityRelateToOneForUpdateInput
+  reviewsOfCourse: CourseRelateToOneForUpdateInput
+}
+
+input CourseRelateToOneForUpdateInput {
+  create: CourseCreateInput
+  connect: CourseWhereUniqueInput
+  disconnect: Boolean
 }
 
 input ReviewUpdateArgs {
@@ -310,12 +551,24 @@ input ReviewCreateInput {
   alumniYear: Int
   isAnon: Boolean
   inAppropriateCount: Int
+  reviewBy: UserRelateToManyForCreateInput
+  rating: RatingRelateToManyForCreateInput
+  reviewsOfUni: UniversityRelateToOneForCreateInput
+  reviewsOfCourse: CourseRelateToOneForCreateInput
+}
+
+input CourseRelateToOneForCreateInput {
+  create: CourseCreateInput
+  connect: CourseWhereUniqueInput
 }
 
 type Rating {
   id: ID!
-  tile: String
-  rating: Int
+  ratingType: String
+  rating: Float
+  reviewRating: Review
+  ratingForUni: University
+  ratingForCourse: Course
 }
 
 input RatingWhereUniqueInput {
@@ -327,8 +580,11 @@ input RatingWhereInput {
   OR: [RatingWhereInput!]
   NOT: [RatingWhereInput!]
   id: IDFilter
-  tile: StringNullableFilter
-  rating: IntNullableFilter
+  ratingType: StringNullableFilter
+  rating: FloatNullableFilter
+  reviewRating: ReviewWhereInput
+  ratingForUni: UniversityWhereInput
+  ratingForCourse: CourseWhereInput
 }
 
 input StringNullableFilter {
@@ -359,15 +615,35 @@ input NestedStringNullableFilter {
   not: NestedStringNullableFilter
 }
 
+input FloatNullableFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatNullableFilter
+}
+
 input RatingOrderByInput {
   id: OrderDirection
-  tile: OrderDirection
+  ratingType: OrderDirection
   rating: OrderDirection
 }
 
 input RatingUpdateInput {
-  tile: String
-  rating: Int
+  ratingType: String
+  rating: Float
+  reviewRating: ReviewRelateToOneForUpdateInput
+  ratingForUni: UniversityRelateToOneForUpdateInput
+  ratingForCourse: CourseRelateToOneForUpdateInput
+}
+
+input ReviewRelateToOneForUpdateInput {
+  create: ReviewCreateInput
+  connect: ReviewWhereUniqueInput
+  disconnect: Boolean
 }
 
 input RatingUpdateArgs {
@@ -376,8 +652,16 @@ input RatingUpdateArgs {
 }
 
 input RatingCreateInput {
-  tile: String
-  rating: Int
+  ratingType: String
+  rating: Float
+  reviewRating: ReviewRelateToOneForCreateInput
+  ratingForUni: UniversityRelateToOneForCreateInput
+  ratingForCourse: CourseRelateToOneForCreateInput
+}
+
+input ReviewRelateToOneForCreateInput {
+  create: ReviewCreateInput
+  connect: ReviewWhereUniqueInput
 }
 
 """
