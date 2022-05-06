@@ -449,7 +449,7 @@ type Review {
   datePosted: DateTime
   alumniYear: Int
   isAnon: Boolean
-  inAppropriateCount: Int
+  inappropriateCount: Int
   reviewBy(
     where: UserWhereInput! = {}
     orderBy: [UserOrderByInput!]! = []
@@ -488,7 +488,7 @@ input ReviewWhereInput {
   datePosted: DateTimeNullableFilter
   alumniYear: IntNullableFilter
   isAnon: BooleanFilter
-  inAppropriateCount: IntNullableFilter
+  inappropriateCount: IntNullableFilter
   reviewBy: UserManyRelationFilter
   rating: RatingManyRelationFilter
   reviewsOfUni: UniversityWhereInput
@@ -516,7 +516,7 @@ input ReviewOrderByInput {
   datePosted: OrderDirection
   alumniYear: OrderDirection
   isAnon: OrderDirection
-  inAppropriateCount: OrderDirection
+  inappropriateCount: OrderDirection
 }
 
 input ReviewUpdateInput {
@@ -528,7 +528,7 @@ input ReviewUpdateInput {
   datePosted: DateTime
   alumniYear: Int
   isAnon: Boolean
-  inAppropriateCount: Int
+  inappropriateCount: Int
   reviewBy: UserRelateToManyForUpdateInput
   rating: RatingRelateToManyForUpdateInput
   reviewsOfUni: UniversityRelateToOneForUpdateInput
@@ -555,7 +555,7 @@ input ReviewCreateInput {
   datePosted: DateTime
   alumniYear: Int
   isAnon: Boolean
-  inAppropriateCount: Int
+  inappropriateCount: Int
   reviewBy: UserRelateToManyForCreateInput
   rating: RatingRelateToManyForCreateInput
   reviewsOfUni: UniversityRelateToOneForCreateInput
