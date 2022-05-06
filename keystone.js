@@ -15,5 +15,12 @@ export default (
             Review,
             Rating,
         },
+        images: {
+            upload: 'local',
+            local: {
+                storagePath: 'public/images',
+                baseUrl: '/images',
+            },
+        },
     })
 )
