@@ -146,6 +146,7 @@ type University {
   campusImage: ImageFieldOutput
   description: String
   location: String
+  country: String
   population: Int
   isApproved: Boolean
   students(
@@ -228,6 +229,7 @@ input UniversityWhereInput {
   slug: StringFilter
   description: StringFilter
   location: StringFilter
+  country: StringFilter
   population: IntNullableFilter
   isApproved: BooleanFilter
   students: UserManyRelationFilter
@@ -271,6 +273,7 @@ input UniversityOrderByInput {
   slug: OrderDirection
   description: OrderDirection
   location: OrderDirection
+  country: OrderDirection
   population: OrderDirection
   isApproved: OrderDirection
 }
@@ -281,6 +284,7 @@ input UniversityUpdateInput {
   campusImage: ImageFieldInput
   description: String
   location: String
+  country: String
   population: Int
   isApproved: Boolean
   students: UserRelateToManyForUpdateInput
@@ -331,6 +335,7 @@ input UniversityCreateInput {
   campusImage: ImageFieldInput
   description: String
   location: String
+  country: String
   population: Int
   isApproved: Boolean
   students: UserRelateToManyForCreateInput

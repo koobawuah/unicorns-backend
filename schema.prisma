@@ -35,6 +35,7 @@ model University {
   campusImage_id        String?
   description           String   @default("")
   location              String   @default("")
+  country               String   @default("")
   population            Int?
   isApproved            Boolean  @default(false)
   students              User[]   @relation("User_attendsUniversity")
