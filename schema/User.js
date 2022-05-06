@@ -1,5 +1,5 @@
 import { list } from "@keystone-6/core";
-import { checkbox, text, } from "@keystone-6/core/fields";
+import { checkbox, relationship, text, } from "@keystone-6/core/fields";
 
 const User = list({
     fields: {
@@ -9,7 +9,14 @@ const User = list({
             validation: { isRequired: true } 
         }),
         isVerified: checkbox(),
-        //relationships
+        attendsUniversity: relationship({
+            ref: 'University.students',
+            many: false,
+        }),
+        reviewsMade: relationship({
+            ref: 'Review.reviewBy',
+            many: true,
+        }),
     }
 })
 
