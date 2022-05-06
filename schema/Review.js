@@ -12,7 +12,7 @@ const Review = list({
         datePosted: timestamp({ defaultValue: { kind : 'now' } }),
         alumniYear: integer(),
         isAnon: checkbox(),
-        inAppropriateCount: integer(),
+        inappropriateCount: integer(),
         reviewBy: relationship({
             ref: 'User.reviewsMade',
             many: true,
