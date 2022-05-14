@@ -15,6 +15,11 @@ export default (
             Review,
             Rating,
         },
+        server: {
+            cors: {
+                origin: '*',
+            }
+        },
         images: {
             upload: 'local',
             local: {
